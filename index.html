@@ -1,0 +1,119 @@
+<!DOCTYPE html><html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Omnia 💖</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;600;800&family=Great+Vibes&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; overflow-y:auto;
+  font-family:'Cairo', sans-serif;
+  background: radial-gradient(circle at top, #140016, #000);
+  color:white; display:flex; justify-content:center;
+}
+canvas{position:fixed; top:0; left:0; z-index:0}
+.card{
+  position:relative; z-index:2; width:90%; max-width:420px;
+  margin:40px 0; background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(15px); border-radius:25px;
+  padding:20px; text-align:center;
+}
+h1{font-family:'Great Vibes', cursive; font-size:2.6em}
+img{width:100%; border-radius:20px; margin:10px 0}
+p{font-size:1.05em; line-height:1.9; max-height:250px; overflow-y:auto}
+.startOverlay{position:fixed; inset:0; z-index:5; display:flex; align-items:center; justify-content:center; background:#000}
+.startBtn{padding:15px 25px; border-radius:30px; border:none; font-size:16px; background:#ff4d6d; color:#fff; cursor:pointer}
+</style></head>
+<body><div class="startOverlay" id="overlay">
+  <button class="startBtn" onclick="startExperience()">اضغطي هنا ✨</button>
+</div><canvas id="stars"></canvas>
+
+<div class="card">
+  <h1>Omnia</h1>
+  <img src="omnia.jpg" alt="Omnia">
+  <canvas id="heart" width="150" height="150"></canvas>
+  <p id="text"></p>
+</div><!-- LOCAL AUDIO (IMPORTANT) --><audio id="bgMusic" preload="auto" loop playsinline>
+  <source src="music.mp3" type="audio/mpeg">
+</audio><script>
+function startExperience(){
+  const music = document.getElementById("bgMusic");
+  music.volume = 0.7;
+
+  let playPromise = music.play();
+
+  if(playPromise !== undefined){
+    playPromise.then(()=>{
+      console.log("Audio working");
+    }).catch(()=>{
+      alert("لو مفيش صوت، تأكد إن ملف music.mp3 موجود جنب الموقع 🔊");
+    });
+  }
+
+  document.getElementById("overlay").style.display="none";
+}
+
+// typing
+const message = `أمنيتي...
+
+أنا عارف إن في حاجة حصلت زعلتك من جواكي، حتى لو أنا مش عارف تفاصيلها… بس اللي متأكد منه إنك متستاهليش الإحساس ده خالص. 
+
+لو الدنيا فجأة ضاقت عليكي، أو حسّيتي إنك تايهة… افتكري إنك مش لوحدك.
+في حد شايفك، مقدّرك، ومش شايفك غير جميلة وقوية… حتى في لحظات ضعفك.
+
+اهدي شوية… خدي نفس…
+الدنيا مش هتفضل تقيلة كده على طول، والإحساس الوحش مهما كبر بيعدّي.
+
+وصدقيني… وجودك لوحده فارق.
+بطريقتك، بكلامك، حتى بتفاصيلك الصغيرة اللي يمكن إنتي مش واخدة بالك منها.
+
+وبالمناسبة.... 
+إحنا معندناش غير أمنية واحدة بس…
+ولو زعلت، الدنيا كلها تبوظ.
+ولو ضحكت، كل حاجة بترجع صح تاني ❤️`;
+
+let i=0;
+function type(){
+  if(i<message.length){
+    document.getElementById("text").innerHTML += message[i]==="\n"?"<br>":message[i];
+    i++; setTimeout(type,28);
+  }
+}
+type();
+
+// stars
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth; canvas.height=innerHeight;
+let stars=[];
+for(let i=0;i<120;i++){stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2,d:Math.random()*1})}
+function drawStars(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="white";
+  ctx.beginPath();
+  stars.forEach(s=>{ctx.moveTo(s.x,s.y); ctx.arc(s.x,s.y,s.r,0,Math.PI*2)});
+  ctx.fill();
+  stars.forEach(s=>{s.y+=s.d; if(s.y>canvas.height){s.y=0; s.x=Math.random()*canvas.width}});
+}
+setInterval(drawStars,33);
+
+// heart
+const heart=document.getElementById("heart");
+const hctx=heart.getContext("2d");
+let t=0;
+function drawHeart(){
+  hctx.clearRect(0,0,150,150);
+  hctx.beginPath();
+  for(let i=0;i<t;i+=0.01){
+    let x=75+50*Math.pow(Math.sin(i),3);
+    let y=60-30*(Math.cos(i)-Math.cos(2*i)/2-Math.cos(3*i)/6-Math.cos(4*i)/24);
+    hctx.lineTo(x,y);
+  }
+  hctx.strokeStyle="#ff4d6d";
+  hctx.lineWidth=2;
+  hctx.stroke();
+  t+=0.05;
+  if(t<=Math.PI*2) requestAnimationFrame(drawHeart);
+}
+drawHeart();
+</script></body>
+</html>
